@@ -28,12 +28,24 @@ PQ = {
 var m = [];
 var origin = [0,0];
 var goal = [9,9];
+var walls = [
+	[[0,3],[1,3],[2,3],[3,3],[4,3],[5,3]],
+	[[9,7],[8,7],[7,7],[6,7],[5,7],[4,7],[3,7]]
+]
 
 function buildMatrix(){
 	for(i=0; i<10; i++){
 		m[i] = [];
 		for(j=0; j<10; j++){
 			m[i][j] = 0;
+		}
+	}
+
+	for(j=0; j<walls.length; j++){
+		for(i=0; i<walls[j].length; i++){
+			x = walls[j][i][0]
+			y = walls[j][i][1] 
+			m[x][y] = "w"
 		}
 	}
 }
@@ -81,35 +93,67 @@ function getNeighbors(elem){
 	neighbors = []
 	//top
 	if(m[el[0]] !== undefined && m[el[0]][el[1]-1] !== undefined){
-		neighbors.push([el[0],el[1]-1])
+		x = el[0]
+		y = el[1]-1
+		if(m[x][y] != "w"){
+			neighbors.push([x,y])
+		}
 	}
 	//bottom
 	if(m[el[0]] !== undefined && m[el[0]][el[1]+1] !== undefined){
-		neighbors.push([el[0],el[1]+1])
+		x = el[0]
+		y = el[1]+1
+		if(m[x][y] != "w"){
+			neighbors.push([x,y])
+		}
 	}
 	//right
 	if(m[el[0]+1] !== undefined && m[el[0]+1][el[1]] !== undefined){
-		neighbors.push([el[0]+1,el[1]])
+		x = el[0]+1
+		y = el[1]
+		if(m[x][y] != "w"){
+			neighbors.push([x,y])
+		}
 	}
 	//left
 	if(m[el[0]-1] !== undefined && m[el[0]-1][el[1]] !== undefined){
-		neighbors.push([el[0]-1,el[1]])
+		x = el[0]-1
+		y = el[1]
+		if(m[x][y] != "w"){
+			neighbors.push([x,y])
+		}
 	}
 	//upper right diagonal
 	if(m[el[0]+1] !== undefined && m[el[0]+1][el[1]+1] !== undefined){
-		neighbors.push([el[0]+1,el[1]+1])
+		x = el[0]+1
+		y = el[1]+1
+		if(m[x][y] != "w"){
+			neighbors.push([x,y])
+		}
 	}
 	//upper left diagonal
 	if(m[el[0]-1] !== undefined && m[el[0]-1][el[1]+1] !== undefined){
-		neighbors.push([el[0]-1,el[1]+1])
+		x = el[0]-1
+		y = el[1]+1
+		if(m[x][y] != "w"){
+			neighbors.push([x,y])
+		}
 	}
 	//bottom right diagonal
 	if(m[el[0]+1] !== undefined && m[el[0]+1][el[1]-1] !== undefined){
-		neighbors.push([el[0]-1,el[1]-1])
+		x = el[0]+1
+		y = el[1]-1
+		if(m[x][y] != "w"){
+			neighbors.push([x,y])
+		}
 	}
 	//bottom left diagonal
 	if(m[el[0]-1] !== undefined && m[el[0]-1][el[1]-1] !== undefined){
-		neighbors.push([el[0]-1,el[1]-1])
+		x = el[0]-1
+		y = el[1]-1
+		if(m[x][y] != "w"){
+			neighbors.push([x,y])
+		}
 	}
 
 	return neighbors;
@@ -134,13 +178,13 @@ function astar(){
 			break
 		}
 
-
 		d = Number.MAX_SAFE_INTEGER
 		neighbors = getNeighbors(current);
-		neighbors.forEach(function(next,index,array){
+
+		neighbors.forEach(function(next,index,array){			
 			new_cost = 1;
 			priority = new_cost + heuristic(goal, next)
-			if(priority < d){
+			if(cost_so_far[next] === undefined && priority < d){
 				d = priority
 				cost_so_far[next] = new_cost				
 				frontier.push(next, priority)
