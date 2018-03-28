@@ -197,40 +197,32 @@ function astar(){
 }
 
 function findPath(path){
-	for(key in path){
-		x1 = key[0]
-		y1 = key[2]
-		x2 = path[key][0][0]
-		y2 = path[key][0][2]
-		
-		m[x1][y1] = "x"
-		m[x2][y2] = "x"
-		printMatrix()
+	p = [];
+	came_from = path[goal];
+	p.push(came_from[0])
+
+	while(came_from !== null){
+		came_from = path[came_from[0]]	
+		if(came_from !== null){
+			p.push(came_from[0])
+		}
 	}
+
+	return p;
 }
 
-function optimizePath(path){
-	optimizedPath = []
-	for(key in path){
+function drawPath(path){
+	for(z=path.length-1; z>=0; z--){
+		x = path[z][0]
+		y = path[z][1]
 		
-		if(key == "0,0"){
-			continue
-		}
-
-		index = path[key][0]
-		priority = path[key][1]
-		
-		if(optimizedPath[index] === undefined){
-			optimizedPath[index] = [key, priority]
-		}else if(optimizedPath[index][1] > priority){
-			optimizedPath[index] = [key, priority]
-		}
+		m[x][y] = "x"
+		printMatrix()
 	}
-	return optimizedPath
 }
 
 buildMatrix();
 printMatrix();
 path = astar();
-path = optimizePath(path);
-findPath(path);
+path = findPath(path);
+drawPath(path)
